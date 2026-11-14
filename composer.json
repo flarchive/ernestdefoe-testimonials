@@ -1,0 +1,101 @@
+{
+    "name": "ernestdefoe/testimonials",
+    "description": "Testimonials: members say what they think of your community, a tag or a product, with star ratings and rated aspects. Moderated, with consent, and shown in a carousel, wall, spotlight and rating summary in Bespoke, Page Builder and FoF widgets.",
+    "keywords": [
+        "flarum",
+        "flarum-extension",
+        "testimonials",
+        "reviews",
+        "ratings",
+        "widget",
+        "social proof"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ernest Defoe",
+            "email": "ernestdefoe@gmail.com"
+        }
+    ],
+    "homepage": "https://github.com/ernestdefoe/testimonials",
+    "support": {
+        "issues": "https://github.com/ernestdefoe/testimonials/issues",
+        "source": "https://github.com/ernestdefoe/testimonials"
+    },
+    "funding": [
+        {
+            "type": "other",
+            "url": "https://buymeacoffee.com/ernestdefoe"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "flarum/core": "^2.0"
+    },
+    "suggest": {
+        "flarum/tags": "Testimonials about a tag, visible only to people who can see the tag",
+        "ernestdefoe/depot": "Testimonials about a download, and Depot reviews shown as testimonials",
+        "ernestdefoe/renown": "XP for an approved testimonial",
+        "ernestdefoe/bespoke": "The four widgets in Bespoke's zones",
+        "ernestdefoe/page-builder": "The four widgets as Page Builder blocks",
+        "fof/forum-widgets-core": "The four widgets in FoF's widget sections",
+        "flarum/gdpr": "Testimonials in a member's data export and erasure"
+    },
+    "autoload": {
+        "psr-4": {
+            "ErnestDefoe\\Testimonials\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ErnestDefoe\\Testimonials\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Testimonials",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-quote-left",
+                "backgroundColor": "#3c587c",
+                "color": "#fff"
+            },
+            "optional-dependencies": [
+                "flarum/tags",
+                "flarum/gdpr",
+                "ernestdefoe/depot",
+                "ernestdefoe/renown",
+                "ernestdefoe/trust-levels",
+                "ernestdefoe/bespoke",
+                "ernestdefoe/page-builder",
+                "fof/forum-widgets-core"
+            ]
+        }
+    },
+    "require-dev": {
+        "flarum/gdpr": "^2.0",
+        "flarum/phpstan": "^2.0",
+        "flarum/tags": "^2.0",
+        "flarum/testing": "^2.0"
+    },
+    "scripts": {
+        "test": [
+            "@test:integration"
+        ],
+        "test:integration": "phpunit -c tests/phpunit.integration.xml",
+        "test:setup": "@php tests/integration/setup.php",
+        "analyse:phpstan": "phpstan analyse"
+    },
+    "scripts-descriptions": {
+        "test": "Runs all tests.",
+        "test:integration": "Runs all integration tests.",
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once.",
+        "analyse:phpstan": "Run static analysis"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
+}

@@ -1,0 +1,976 @@
+// Testimonials. Every colour comes from Flarum 2's CSS properties, so themes and dark mode
+// carry through; link rules are prefixed html:not(#x-hi) so themes that recolour every link
+// (Bespoke's light theme uses three classes) don't win.
+
+.TestimonialsWidget,
+.TestimonialsPage,
+.TestimonialsQueue,
+.UserTestimonials,
+.ShareTestimonialModal,
+.TestimonialsNudge {
+  --t-quote-font: var(--testimonials-quote-font, Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif);
+  --t-star: #e0a526;
+  --t-star-off: var(--control-bg);
+  --t-line: var(--control-bg);
+  --t-card: var(--body-bg);
+  --t-soft: var(--control-bg);
+}
+
+// ── Pieces ──────────────────────────────────────────────────────────────────
+
+.TestimonialStars {
+  display: inline-flex;
+  gap: 1px;
+  line-height: 1;
+  font-size: 14px;
+  letter-spacing: 0;
+  &--md { font-size: 17px; }
+  &--lg { font-size: 22px; }
+}
+.TestimonialStars-star {
+  color: var(--t-star-off, var(--control-bg));
+  &.is-on { color: var(--t-star, #e0a526); }
+  &.is-half {
+    background: linear-gradient(90deg, var(--t-star, #e0a526) 50%, var(--t-star-off, var(--control-bg)) 50%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.TestimonialAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  font-weight: 600;
+  color: #fff;
+  background: var(--avatar-bg, var(--primary-color));
+  &--anonymous {
+    background: var(--control-bg);
+    color: var(--control-color);
+  }
+}
+
+.TestimonialByline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.TestimonialByline-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+html:not(#x-hi) .TestimonialByline-name,
+html:not(#x-hi) a.TestimonialByline-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-color);
+  text-decoration: none;
+}
+html:not(#x-hi) a.TestimonialByline-name:hover { text-decoration: underline; }
+.TestimonialByline-meta {
+  font-size: 12.5px;
+  color: var(--muted-color);
+}
+
+html:not(#x-hi) .TestimonialChip {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  background: var(--control-bg);
+  color: var(--control-color);
+  text-decoration: none;
+  &.is-warn {
+    background: var(--alert-bg, var(--control-bg));
+    color: var(--alert-color, var(--control-color));
+  }
+}
+
+.TestimonialQuoteMark {
+  fill: var(--primary-color);
+  opacity: 0.35;
+  flex: none;
+}
+
+.TestimonialCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 20px 20px 16px;
+  border: 1px solid var(--t-line, var(--control-bg));
+  border-radius: 12px;
+  background: var(--t-card, var(--body-bg));
+  color: var(--text-color);
+  break-inside: avoid;
+  &.is-featured { border-color: var(--primary-color); }
+  &--large {
+    padding: 24px 24px 18px;
+    .TestimonialCard-body { font-size: 19px; }
+  }
+}
+.TestimonialCard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+html:not(#x-hi) .TestimonialCard-headline {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-color);
+}
+.TestimonialCard-body {
+  margin: 0;
+  font-family: var(--t-quote-font);
+  font-size: 16.5px;
+  line-height: 1.55;
+  color: var(--text-color);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+// ── Widgets ─────────────────────────────────────────────────────────────────
+
+.TestimonialsWidget {
+  color: var(--text-color);
+  min-width: 0;
+  margin-bottom: 20px;
+  &:empty { display: none; }
+}
+.TestimonialsWidget--bare { margin-bottom: 0; }
+.TestimonialsWidget-empty {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px dashed var(--control-bg);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--muted-color);
+}
+.TestimonialsWidget-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-color);
+  .TestimonialQuoteMark { width: 16px; height: 13px; opacity: 0.7; }
+}
+html:not(#x-hi) .TestimonialsWidget-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+html:not(#x-hi) .TestimonialsWidget-more {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+  white-space: nowrap;
+  &:hover { text-decoration: underline; }
+}
+
+// Carousel
+.TestimonialsCarousel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px 32px 18px;
+  border: 1px solid var(--control-bg);
+  border-radius: 16px;
+  background: var(--body-bg);
+}
+.TestimonialsCarousel-head,
+.TestimonialsCarousel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.TestimonialsCarousel-arrows {
+  display: flex;
+  gap: 6px;
+  .Button { width: 40px; height: 40px; border-radius: 20px; }
+}
+.TestimonialsCarousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+  &:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 4px; border-radius: 8px; }
+}
+.TestimonialsCarousel-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.TestimonialsCarousel-quote {
+  margin: 0;
+  max-width: 36em;
+  font-family: var(--t-quote-font);
+  font-size: 25px;
+  line-height: 1.4;
+  color: var(--text-color);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.TestimonialsCarousel-by {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.TestimonialsCarousel-dots { display: flex; }
+.TestimonialsCarousel-dot {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  span {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--muted-color);
+    opacity: 0.35;
+    transition: width 0.2s;
+  }
+  &.is-on span { width: 20px; background: var(--text-color); opacity: 1; }
+}
+.TestimonialsWidget.is-compact {
+  .TestimonialsCarousel { padding: 18px 16px 10px; gap: 14px; }
+  .TestimonialsCarousel-quote { font-size: 18px; }
+}
+
+// Wall: up to --columns columns, each at least 240px wide, so a narrow spot gets one.
+.TestimonialsWall {
+  padding: 24px 24px 8px;
+  border: 1px solid var(--control-bg);
+  border-radius: 16px;
+  background: var(--control-bg);
+  --t-line: transparent;
+}
+.TestimonialsWidget--bare .TestimonialsWall {
+  padding: 0;
+  border: 0;
+  background: none;
+  --t-line: var(--control-bg);
+}
+.TestimonialsWall-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.TestimonialsWall-grid {
+  columns: var(--columns, 3) 240px;
+  column-gap: 16px;
+  .TestimonialCard { margin-bottom: 16px; }
+}
+.TestimonialsWidget.is-compact .TestimonialsWall { padding: 16px 14px 2px; }
+
+// Spotlight
+.TestimonialsSpotlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  margin: 0;
+  padding: 36px 40px;
+  border: 1px solid var(--control-bg);
+  border-radius: 16px;
+  background: var(--body-bg);
+  .TestimonialAvatar { box-shadow: 0 0 0 4px var(--body-bg), 0 0 0 5px var(--control-bg); }
+}
+.TestimonialsSpotlight-main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+.TestimonialsSpotlight-badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 13px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--control-bg);
+  color: var(--control-color);
+  .icon { color: var(--t-star, #e0a526); }
+}
+.TestimonialsSpotlight-quote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  p {
+    margin: 0;
+    font-family: var(--t-quote-font);
+    font-size: 27px;
+    line-height: 1.32;
+    color: var(--text-color);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+}
+.TestimonialsSpotlight-by {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  > span { display: flex; flex-direction: column; gap: 4px; }
+}
+.TestimonialsSpotlight-name { font-weight: 600; font-size: 15px; color: var(--text-color); }
+.TestimonialsSpotlight-meta { font-size: 13px; color: var(--muted-color); }
+.TestimonialsWidget.is-compact {
+  .TestimonialsSpotlight { flex-direction: column; gap: 14px; padding: 20px 18px; }
+  .TestimonialsSpotlight .TestimonialAvatar { width: 52px !important; height: 52px !important; font-size: 18px !important; }
+  .TestimonialsSpotlight-quote p { font-size: 19px; }
+}
+
+// Rating summary (also the page's score card)
+.TestimonialsRating {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid var(--control-bg);
+  border-radius: 16px;
+  background: var(--body-bg);
+}
+.TestimonialsRating-score {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.TestimonialsRating-average {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--text-color);
+}
+.TestimonialsRating-of {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted-color);
+}
+.TestimonialsRating-count { margin: 0; font-size: 15px; font-weight: 600; }
+.TestimonialsRating-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.TestimonialsRating-bar {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) 28px;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-color);
+  > span:last-child { text-align: right; }
+}
+.TestimonialsRating-track {
+  display: block;
+  height: 7px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--control-bg);
+  > span {
+    display: block;
+    height: 100%;
+    border-radius: 4px;
+    background: var(--t-star, #e0a526);
+  }
+}
+.TestimonialsRating-aspects {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--control-bg);
+}
+.TestimonialsRating-aspect {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  dt { color: var(--text-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  dd {
+    margin: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 26px;
+    gap: 8px;
+    align-items: center;
+    color: var(--muted-color);
+    font-weight: 600;
+    text-align: right;
+  }
+}
+// A narrow column wraps the button's label rather than cutting it off.
+.TestimonialsRating-share.Button {
+  white-space: normal;
+  height: auto;
+  min-height: 36px;
+  line-height: 1.3;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.TestimonialsRating-quote {
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--control-bg);
+  blockquote {
+    margin: 0 0 6px;
+    padding: 0;
+    border: 0;
+    font-family: var(--t-quote-font);
+    font-style: italic;
+    font-size: 15.5px;
+    line-height: 1.45;
+    color: var(--text-color);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  figcaption { font-size: 12.5px; color: var(--muted-color); }
+}
+
+// A narrow column (a sidebar, FoF's end section): the score above its stars, aspect names above their bars.
+.TestimonialsWidget.is-narrow {
+  .TestimonialsRating { padding: 16px; }
+  .TestimonialsRating-score { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .TestimonialsRating-average { font-size: 40px; }
+  .TestimonialsRating-aspect {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    dt { white-space: normal; }
+  }
+  .TestimonialsSpotlight { padding: 16px; }
+  .TestimonialsSpotlight-quote p { font-size: 17px; }
+  .TestimonialsCarousel-quote { font-size: 17px; }
+}
+
+// FoF draws its own frame and title.
+.TestimonialsFofWidget {
+  .TestimonialsCarousel,
+  .TestimonialsSpotlight,
+  .TestimonialsRating {
+    border: 0;
+    padding: 0;
+    background: none;
+  }
+}
+
+// ── Page, queue, profile ─────────────────────────────────────────────────────
+
+.TestimonialsNav-count {
+  display: inline-block;
+  min-width: 18px;
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+  background: var(--primary-color);
+  color: var(--button-primary-color, #fff);
+}
+
+.TestimonialsPage-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 36px;
+  border-radius: 18px;
+  background: var(--control-bg);
+}
+.TestimonialsPage-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+html:not(#x-hi) .TestimonialsPage-title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--text-color);
+}
+.TestimonialsPage-lead {
+  margin: 0;
+  max-width: 36em;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--muted-color);
+}
+.TestimonialsPage-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+html:not(#x-hi) .TestimonialsPage-mine {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.TestimonialsPage-score {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 14px;
+  background: var(--body-bg);
+  min-width: 0;
+}
+.TestimonialsPage-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.TestimonialsPage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--control-bg);
+  border-radius: 18px;
+  background: var(--body-bg);
+  color: var(--control-color);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  &.is-on {
+    background: var(--text-color);
+    border-color: var(--text-color);
+    color: var(--body-bg);
+  }
+}
+.TestimonialsPage-chipCount { opacity: 0.7; font-weight: 500; }
+html:not(#x-hi) .TestimonialsPage-label {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-color);
+}
+.TestimonialsPage-featured { margin-bottom: 32px; }
+.TestimonialsPage-featuredGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(~"min(260px, 100%)", 1fr));
+  gap: 16px;
+}
+.TestimonialsPage-grid {
+  columns: 3 240px;
+  column-gap: 16px;
+  .TestimonialCard { margin-bottom: 16px; }
+}
+.TestimonialsPage-empty { color: var(--muted-color); }
+.TestimonialsPage-more { display: flex; justify-content: center; margin: 12px 0 24px; }
+.TestimonialCard .TestimonialControls { align-self: flex-end; margin: -8px -8px -4px 0; }
+
+.TestimonialsQueue-header { margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px; }
+.TestimonialsQueue-tabs {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--control-bg);
+}
+.TestimonialsQueue-tab {
+  flex: none;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: none;
+  color: var(--muted-color);
+  font-weight: 600;
+  cursor: pointer;
+  &.is-on { color: var(--text-color); border-bottom-color: var(--primary-color); }
+}
+.TestimonialsQueue-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  .checkbox { margin: 0 6px 0 0; }
+}
+.TestimonialsQueue-keys {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--muted-color);
+  kbd {
+    display: inline-block;
+    min-width: 20px;
+    padding: 2px 5px;
+    margin: 0 2px;
+    border: 1px solid var(--control-bg);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--text-color);
+    background: var(--body-bg);
+  }
+}
+.TestimonialsQueue-list { display: flex; flex-direction: column; gap: 12px; }
+.QueueRow {
+  border: 1px solid var(--control-bg);
+  border-radius: 14px;
+  background: var(--body-bg);
+  &.is-focused { border-color: var(--primary-color); }
+  &.is-busy { opacity: 0.6; }
+}
+.QueueRow-main {
+  display: flex;
+  gap: 16px;
+  padding: 18px;
+}
+.QueueRow-check { margin-top: 10px; flex: none; width: 16px; height: 16px; }
+.QueueRow-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.QueueRow-who { display: flex; align-items: center; gap: 12px; }
+.QueueRow-when, .QueueRow-meta { font-size: 12.5px; color: var(--muted-color); }
+.QueueRow-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.QueueRow-aspects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--muted-color);
+}
+.QueueRow-consent, .QueueRow-reason { margin: 0; font-size: 12.5px; color: var(--muted-color); }
+.QueueRow-actions {
+  flex: none;
+  width: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  .Button { width: 100%; justify-content: center; }
+}
+.QueueRow-order { display: flex; gap: 6px; .Button { width: auto; flex: 1; } }
+html:not(#x-hi) .QueueRow-decline { color: var(--alert-error-bg, #d83e3e); }
+.QueueRow-declineForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 18px 18px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--control-bg);
+}
+.QueueRow-declineTitle { margin: 0; font-weight: 600; }
+.QueueRow-reasons { display: flex; flex-wrap: wrap; gap: 8px; }
+.QueueRow-reasonOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: var(--body-bg);
+  font-size: 13px;
+  cursor: pointer;
+  &.is-on { border-color: var(--primary-color); }
+}
+.QueueRow-declineActions { display: flex; justify-content: flex-end; gap: 8px; }
+
+.UserTestimonials-head { margin-bottom: 16px; }
+.UserTestimonials-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--control-bg);
+}
+.UserTestimonials-status {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted-color);
+  &.is-approved, &.is-featured { color: var(--text-color); }
+}
+.UserTestimonials-reason { font-weight: 400; }
+.TestimonialCard.is-removed, .TestimonialCard.is-declined, .TestimonialCard.is-spam { opacity: 0.75; }
+
+.TestimonialsNudge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--control-bg);
+  color: var(--control-color);
+  p { margin: 0; flex: 1; min-width: 0; }
+}
+
+// ── The form ────────────────────────────────────────────────────────────────
+
+.ShareTestimonialModal .Modal-content { overflow: hidden; }
+.ShareTestimonial {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
+// 🚨 Flarum 2 spaces form groups with the gap of a `.Form` wrapper, which this form doesn't have:
+// without our own gap every group sits flush against the one above. And .Form-group is a centred
+// flex column: our groups use the full width.
+.ShareTestimonial-form {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.ShareTestimonial .Form-group {
+  margin: 0;
+  gap: 8px;
+  align-items: stretch;
+  text-align: left;
+  > label { margin: 0; font-weight: 600; }
+  .helpText { margin: 0; }
+}
+.ShareTestimonial-note { margin: 0; color: var(--muted-color); }
+.ShareTestimonial-optional { font-weight: 400; color: var(--muted-color); }
+.ShareTestimonial-subject legend,
+.ShareTestimonial-byline legend { font-weight: 600; margin-bottom: 8px; padding: 0; }
+.ShareTestimonial-subject { border: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ShareTestimonial-segments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--control-bg);
+}
+.ShareTestimonial-segment {
+  flex: 1 1 auto;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--control-color);
+  font-weight: 600;
+  cursor: pointer;
+  &.is-on {
+    background: var(--body-bg);
+    color: var(--text-color);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  }
+}
+.ShareTestimonial-linked { margin: 0; color: var(--muted-color); }
+.ShareTestimonial-results {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--control-bg);
+  border-radius: 8px;
+  button {
+    display: block;
+    width: 100%;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 0;
+    background: none;
+    text-align: left;
+    color: var(--text-color);
+    cursor: pointer;
+    &:hover, &:focus-visible { background: var(--control-bg); }
+  }
+}
+.ShareTestimonial .ShareTestimonial-ratings { gap: 4px; }
+.ShareTestimonial-aspects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(~"min(240px, 100%)", 1fr));
+  gap: 0 18px;
+  padding-top: 6px;
+  border-top: 1px solid var(--control-bg);
+}
+.ShareTestimonial-rateRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+.ShareTestimonial-rateLabel { font-size: 13.5px; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.ShareTestimonial-rateRow--overall .ShareTestimonial-rateLabel { font-weight: 600; }
+.ShareTestimonial-stars { display: inline-flex; flex: none; }
+.ShareTestimonial-star {
+  width: 32px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 20px;
+  line-height: 1;
+  // The modal's body is --control-bg: an unpicked star needs a colour that shows on it.
+  color: var(--muted-more-color, var(--muted-color));
+  opacity: 0.55;
+  &.is-on { opacity: 1; }
+  cursor: pointer;
+  &.is-on { color: var(--t-star, #e0a526); }
+  &:focus-visible { outline: 2px solid var(--primary-color); border-radius: 6px; }
+}
+.ShareTestimonial-stars.is-big .ShareTestimonial-star { width: 44px; height: 44px; font-size: 28px; }
+.ShareTestimonial-body { font-family: var(--t-quote-font); font-size: 16px; line-height: 1.5; }
+.ShareTestimonial-count { display: flex; justify-content: space-between; gap: 10px; .is-short { color: var(--alert-error-bg, #d83e3e); } }
+.ShareTestimonial-byline { border: 0; padding: 0; }
+.ShareTestimonial-bylines {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(~"min(128px, 100%)", 1fr));
+  gap: 8px;
+}
+.ShareTestimonial-bylineOption {
+  background: var(--body-bg);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px;
+  border: 1px solid var(--control-bg);
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 0;
+  input { margin-top: 2px; }
+  > span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  > span > span { font-size: 12.5px; color: var(--muted-color); overflow-wrap: anywhere; }
+  &.is-on { border-color: var(--primary-color); }
+}
+.ShareTestimonial .ShareTestimonial-consent { gap: 12px; }
+// Themes bold every form label (Bespoke: `.Form-group label`): the consent lines are sentences.
+html:not(#x-hi) .ShareTestimonial .ShareTestimonial-consent label.checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  input { margin-top: 3px; flex: none; }
+}
+.ShareTestimonial .Form-group.ShareTestimonial-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 18px;
+  border-top: 1px solid var(--control-bg);
+  gap: 14px;
+  .helpText { margin: 0; flex: 1; min-width: 0; }
+  .Button { flex: none; }
+}
+.ShareTestimonial-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 20px;
+  border-left: 1px solid var(--body-bg);
+  --t-line: transparent;
+}
+.ShareTestimonial-previewLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-color);
+}
+
+// ── Phones ──────────────────────────────────────────────────────────────────
+
+@media @phone {
+  .TestimonialsPage-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 22px 16px;
+  }
+  html:not(#x-hi) .TestimonialsPage-title { font-size: 26px; }
+  .TestimonialsPage-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding: 0 15px 4px;
+    .TestimonialsPage-chip { flex: none; }
+  }
+  .TestimonialsPage-grid, .TestimonialsWall-grid { columns: 1; }
+  .QueueRow-main { flex-wrap: wrap; }
+  .QueueRow-actions {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .Button { width: auto; flex: 1 1 auto; min-height: 44px; }
+  }
+  .TestimonialsQueue-keys { display: none; }
+  .ShareTestimonial { grid-template-columns: minmax(0, 1fr); }
+  .ShareTestimonial-preview { display: none; }
+  .ShareTestimonial .Form-group.ShareTestimonial-actions { flex-direction: column; align-items: stretch; .Button { min-height: 48px; } }
+  .ShareTestimonial-segment { min-height: 44px; }
+}
